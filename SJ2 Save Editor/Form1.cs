@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,9 +11,10 @@ using System.Windows.Forms;
 
 namespace SJ2_Save_Editor
 {
-    public partial class Form1 : Form
+    public partial class Editor : Form
     {
-        public Form1()
+        string filePath;
+        public Editor()
         {
             InitializeComponent();
         }
@@ -32,12 +34,76 @@ namespace SJ2_Save_Editor
 
         private void button2_Click(object sender, EventArgs e)
         {
+
+        }
+        // zapisywanie save'a
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Utils.Patch($"POINTS {points1.Text}", 1, filePath);
+            Utils.Patch($"AUTO_C {autoc1.Text}", 2, filePath);
+            Utils.Patch($"AUTO_T {autot1.Text}", 3, filePath);
+            Utils.Patch($"QCA {QCA1.Text} {QCA2.Text} {QCA3.Text}", 7, filePath);
+            Utils.Patch($"VOL_MAIN {VOL_MAIN.Text}", 15, filePath);
+            Utils.Patch($"VOL_MUSIC {VOL_MUSIC.Text}", 16, filePath);
+            Utils.Patch($"VOL_SFX {VOL_SFX.Text}", 17, filePath);
+            Utils.Patch($"VOL_SPEECH {VOL_SPEECH.Text}", 18, filePath);
+            Utils.Patch($"VOL_OTHER {VOL_OTHER.Text}", 19, filePath);
+        }
+
+        // wczytywanie
+        private void button2_Click_1(object sender, EventArgs e)
+        {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            if(openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                string filePath = openFileDialog.FileName;
-                MessageBox.Show(filePath);
+                filePath = openFileDialog.FileName;
+                using (StreamReader reader = new StreamReader(filePath))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        if (line.Contains("POINTS"))
+                        {
+                            points1.Text = line.Split(' ')[1];
+                        }
+                        if (line.Contains("AUTO_C"))
+                        {
+                            autoc1.Text = line.Split(' ')[1];
+                        }
+                        if (line.Contains("AUTO_T"))
+                        {
+                            autot1.Text = line.Split(' ')[1];
+                        }
+                        if (line.Contains("QCA"))
+                        {
+                            QCA1.Text = line.Split(' ')[1];
+                            QCA2.Text = line.Split(' ')[2];
+                            QCA3.Text = line.Split(' ')[3];
+                        }
+                        if (line.Contains("VOL_MAIN"))
+                        {
+                            VOL_MAIN.Text = line.Split(' ')[1];
+                        }
+                        if (line.Contains("VOL_MUSIC"))
+                        {
+                            VOL_MUSIC.Text = line.Split(' ')[1];
+                        }
+                        if (line.Contains("VOL_SFX"))
+                        {
+                            VOL_SFX.Text = line.Split(' ')[1];
+                        }
+                        if (line.Contains("VOL_SPEECH"))
+                        {
+                            VOL_SPEECH.Text = line.Split(' ')[1];
+                        }
+                        if (line.Contains("VOL_OTHER"))
+                        {
+                            VOL_OTHER.Text = line.Split(' ')[1];
+                        }
+                    }
+                }
             }
+            
         }
     }
 }
