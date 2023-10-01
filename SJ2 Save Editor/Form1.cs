@@ -77,8 +77,17 @@ namespace SJ2_Save_Editor
                         if (line.Contains("QCA"))
                         {
                             QCA1.Text = line.Split(' ')[1];
-                            QCA2.Text = line.Split(' ')[2];
-                            QCA3.Text = line.Split(' ')[3];
+                            // fix dla problemu gdzie swiezy save nie zawiera tych 2 ostatnich liczb co triggerowalo errora u edytora
+                            if(!line.Split(' ')[1].Contains("0"))
+                            {
+                                QCA2.Text = line.Split(' ')[2];
+                                QCA3.Text = line.Split(' ')[3];
+                            } else
+                            {
+                                QCA2.Text = "0";
+                                QCA3.Text = "0";
+                            }
+                            
                         }
                         if (line.Contains("VOL_MAIN"))
                         {
